@@ -9,9 +9,11 @@ Version 1.00
 
 ## DESCRIPTION
 
-This page cahce is part of a collection of code intended to help improve the performance and funtionality of opencart.
+This page cache is part of a collection of code intended to help improve the performance and funtionality of opencart.
 
-At the moment, these improvements consist of a simple, but effective, page level cache for opencart.  It's very simple to install, consisting only of one new file, and 2 minor changes you'll make to the index.php file in your home directory.
+At the moment, these improvements consist of a simple, but effective, page level cache for opencart.  It's very simple to install, consisting only of one new file, and 2 minor changes you'll make to the index.php file in your main opencart directory.
+
+It's tested so far only on opencart 1.5.6.X, but should work on all of the 1.5.X versions.  This is a new piece of software, so we highly recommend you test it well before using.  See the CAVEATS section. 
 
 ## Installation
 
