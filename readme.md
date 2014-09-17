@@ -82,7 +82,7 @@ A page cache makes a much bigger difference on an opencart site that has a lot o
 
 Kerry Schwab, `<sales at budgetneon.com>`
 
-We run [BudgetNeon.com](http://budgetneon.com/).  The website uses opencart, and this code was written specifically to support our website. We sell [neon open signs](http://budgetneon.com/open-signs), signs for [restaurants](http://budgetneon.com/restaraunt) and [businesses](http://budgetneon.com/business, as well as [custom made neon](http://budgetneon.com/custom).  We plan to release more our local opencart additions, especially those that improve performance.
+We run [BudgetNeon.com](http://budgetneon.com/).  The website uses opencart, and this code was written specifically to support our website. We sell [neon open signs](http://budgetneon.com/open-signs), signs for [restaurants](http://budgetneon.com/restaurant) and [businesses](http://budgetneon.com/business), as well as [custom made neon signs](http://budgetneon.com/custom).  We plan to release more of our local opencart additions, especially those that improve performance.
 
 ## LICENSE AND COPYRIGHT
 
