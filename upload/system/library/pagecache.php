@@ -1,6 +1,6 @@
 <?php
 //
-// Copyright (c) 2013 Kerry Schwab & BudgetNeon.com. All rights reserved.
+// Copyright (c) 2014 Kerry Schwab & BudgetNeon.com. All rights reserved.
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the the FreeBSD License .
 // You may obtain a copy of the full license at:
@@ -113,8 +113,7 @@ class PageCache {
     }
 
     private function RedirectOutput($buffer) {
-        $this->buffer=$buffer;
-        fwrite($this->outfp, $this->buffer);
+        fwrite($this->outfp, $buffer);
         if ($this->addcomment == true) {
             fwrite($this->outfp, 
                   "\n<!--cache [". htmlspecialchars($_SERVER['REQUEST_URI']) . 
