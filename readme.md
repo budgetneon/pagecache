@@ -1,6 +1,6 @@
 # octurbo 
 
-octurbo - Code additions for opencart to help improve performance and functionality
+pagecache - A page level cache for opencart
  
 
 ## VERSION
@@ -9,7 +9,7 @@ Version 1.00
 
 ## DESCRIPTION
 
-Octurbo is a collection of code intended to help improve the performance and funtionality of opencart.
+This page cahce is part of a collection of code intended to help improve the performance and funtionality of opencart.
 
 At the moment, these improvements consist of a simple, but effective, page level cache for opencart.  It's very simple to install, consisting only of one new file, and 2 minor changes you'll make to the index.php file in your home directory.
 
