@@ -22,7 +22,7 @@ Two simple steps.
 
 
 ## OVERVIEW
-Very early in the index.php, the following lines of code have been added to index.php:
+Very early in opencart's main index.php file, the following lines of code have been added:
  
     require_once(DIR_SYSTEM . 'library/pagecache.php');
     $pagecache = new PageCache();
