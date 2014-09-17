@@ -1,0 +1,34 @@
+#
+# Add the lines below, starting with //START CHANGES, to the
+# /index.php file in your opencart directory, near the top
+# , just after this section:
+#
+# Configuration
+#if (file_exists('config.php')) {
+#    require_once('config.php');
+#}  
+# 
+// START CHANGES FOR PAGECACHE
+require_once(DIR_SYSTEM . 'library/pagecache.php');
+$pagecache = new PageCache();
+if ($pagecache->ServeFromCache()) {
+    // exit here if we served this page from the cache;
+    return;
+}
+// END CHANGES FOR PAGECACHE
+
+
+# Add the lines starting with //START CHANGES to the 
+# /index.php file in your opencart directory, near
+# the end of the file, just after these two lines:
+#
+# // Output
+# $response->output();
+
+// START CHANGES FOR PAGECACHE
+// if this page is ok to cache, but not yet in the cache,
+// try to save it to the page cache
+if ($pagecache->OkToCache()) {
+    $pagecache->CachePage($response);
+}
+// END CHANGES FOR PAGECACHE
