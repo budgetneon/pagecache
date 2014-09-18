@@ -113,13 +113,14 @@ class PageCache {
     }
 
     private function RedirectOutput($buffer) {
-        fwrite($this->outfp, $buffer);
         if ($this->addcomment == true) {
-            fwrite($this->outfp, 
+            fwrite($this->outfp, $buffer .
                   "\n<!--cache [". htmlspecialchars($_SERVER['REQUEST_URI']) . 
                   "] expires: ".
                   date("Y-m-d H:i:s e",time()+$this->expire).'-->'
             );
+        } else {
+            fwrite($this->outfp, $buffer);
         }
     }
 
@@ -146,7 +147,6 @@ class PageCache {
                 $this->outfp=$fp;
                 ob_start(array($this,'RedirectOutput'));
                 $response->output();
-                while(@ob_end_flush());
                 fclose($fp);
                 rename($temp,$this->cachefile);
                 return true;
