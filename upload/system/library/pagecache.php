@@ -147,7 +147,9 @@ class PageCache {
                 $this->outfp=$fp;
                 ob_start(array($this,'RedirectOutput'));
                 $response->output();
+                $ohandler=set_error_handler(array($this, 'nullhandler'));
                 while(@ob_end_flush());
+                set_error_handler($ohandler);
                 fclose($fp);
                 rename($temp,$this->cachefile);
                 return true;
