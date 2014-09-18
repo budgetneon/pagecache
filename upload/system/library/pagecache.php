@@ -13,7 +13,11 @@ class PageCache {
     private $currency='USD'   ; // default currency for site
     private $addcomment = true; // set to true to add a comment to the bottom
                                 // of cached pages with info and expire time
-    private $skip_urls= array('#checkout/#','#product/compare#');
+    private $skip_urls= array(
+        '#checkout/#',
+        '#product/compare#',
+        '#register/country#'
+    );
 
     private $cachefile=null;   // null specifically meaning "not known yet"
     private $oktocache=null;   // null specifically meaning "not known yet"
