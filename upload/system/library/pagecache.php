@@ -77,9 +77,9 @@ class PageCache {
             }
         }
         // got here, so it must be okay to cache
-        // not that while "ok to cache", other problems, later,
-        // may cause this not to be cached. Like a 404 response,
-        // for example
+        // note that while the page is "ok to cache"...
+        // other problems may cause this page not to be cached. 
+        // Like a 404 response for example.
         $this->oktocache=true;
         return $this->oktocache;
     }
