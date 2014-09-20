@@ -1,6 +1,6 @@
 # pagecache
 
-pagecache - A page level cache for opencart
+pagecache - A fast, open source page level cache for opencart
  
 
 ## VERSION
