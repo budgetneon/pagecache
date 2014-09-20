@@ -9,17 +9,17 @@ Version 1.00
 
 ## DESCRIPTION
 
-This page cache is part of a collection of code intended to help improve the performance and funtionality of opencart.
+This page cache is part of a collection of code intended to help improve the performance and funtionality of opencart.  See [octurbo.com](http://octurbo.com) for more informaiton on the effort.
 
-At the moment, these improvements consist of a simple, but effective, page level cache for opencart.  It's very simple to install, consisting only of one new file, and 2 minor changes you'll make to the index.php file in your main opencart directory.
+At the moment, these improvements consist of a simple, but effective, page level cache for opencart.  It's very easy to install, consisting only of one new file and 2 minor changes to the index.php file in your main opencart directory.
 
-It's tested so far only on opencart 1.5.6.X, but should work on all of the 1.5.X versions.  This is a new piece of software, so we highly recommend you test it well before using.  See the CAVEATS section. 
+It has been tested so far only on opencart 1.5.6.X, but should work on all of the 1.5.X versions, perhaps with minor tweaks.  This is a new piece of software, so we highly recommend you test it well before using.  See the CAVEATS section. 
 
 ## Installation
 
 Two simple steps.
 
-- Copy the pagecache.php to the system/library directory of your opencart installation.
+- Copy the pagecache.php file to the system/library directory of your opencart installation.
 - Read the 'index.php.changes' file, and make the two changes to your index.php file
 
 
@@ -66,11 +66,20 @@ A new notes on these settings:
 - $addcomment : Set to true if you want the page cache to append an html comment at the end of the stored cache file that notes the url cached and it's expiry time.  This can be helpful since you can see it with live pages via your browser's "view source" functionality.  Set to false if you don't want this.  Note that this can create problems if you choose to cache, for example, JSON pages.  An thml comment at the end of some JSON will create runtime javascript errors.
 - $skip_urls : This is an array of PCRE patterns for urls that you do not want to be cached.  The default settings will not cache any page with the string 'checkout/' or 'product/compare' in it's url.  Not that this is not the only check done to decide when a page shoudn't be cached.  You don't have to, for example, mark the 'account/' pages here, because we already disable caching when a user is logged in.
 
+Also, the cached pages are kept in a directory named 'pagecache', under the existing directory opencart uses for it's more general cache.  In most installations, this would be /your_opencart_root/system/cache/pagecache.  There is no functionality to manually expire cached pages or flush the cache.  You can, however, run this command on most linux/unix machines:
+
+  # use caution..."find with -exec rm" can be dangerous if mis-typed
+  find /your_opencart_root/system/cache/pagecache -type f -exec rm {} \;
+
+
+
+
 ## DEMO
 
 
-We created demo site at [octurbo.com](http://octurbo.com).  The home page has links to both a stock/vanilla installation of opencart, and one with our page cache.  Note that you may have to load a page from the pagecache enabled site first...to get it into the cache.  The cache expires every 4 hours.  Since the vanillaopencart install doesn't have a lot of categories and products, there's not a HUGE difference when you measure load times.  From our vantage point on the network, the cached version of the page downloads about twice as fast as the vanilla page (that's just the html of the page...not including all the images, css, etc). 
-A page cache makes a much bigger difference on an opencart site that has a lot or products, categories, and other functionality.  You can also try our production site, [budgetneon.com](http://budgetneon.com/), which has lots of products and nested categories.  If you view the source of a cached page, you'll see the html comment at the bottom.
+We created demo site at [octurbo.com](http://octurbo.com).  The home page has links to both a stock/vanilla installation of opencart, and one with our page cache.  Note that you may have to load a page from the pagecache enabled site twice...once to prime the cache, and a second time to see the performance improvement.
+
+A page cache makes a much bigger difference on an opencart site that has a lot or products, categories, and other functionality.  So, for the demo site, we uploaded a large number of movies from [an Amazon AWS Cloudsearch dataset](https://aws.amazon.com/developertools/9131774809784850). You can also try our production site at [budgetneon.com](http://budgetneon.com/).  It has lots of products and nested categories.  If you view the source of a cached page, you'll see the html comment at the bottom.
 
 ## CAVEATS
 
