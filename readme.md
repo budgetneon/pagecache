@@ -9,7 +9,7 @@ Version 1.00
 
 ## DESCRIPTION
 
-This page cache is part of a collection of code intended to help improve the performance and funtionality of opencart.  See [octurbo.com](http://octurbo.com) for more informaiton on the effort.
+This page cache is part of a collection of code intended to help improve the performance and funtionality of opencart.  See [octurbo.com](http://octurbo.com) for more information on the effort.
 
 At the moment, these improvements consist of a simple, but effective, page level cache for opencart.  It's very easy to install, consisting only of one new file and 2 minor changes to the index.php file in your main opencart directory.
 
@@ -68,10 +68,8 @@ A new notes on these settings:
 
 Also, the cached pages are kept in a directory named 'pagecache', under the existing directory opencart uses for it's more general cache.  In most installations, this would be /your_opencart_root/system/cache/pagecache.  There is no functionality to manually expire cached pages or flush the cache.  You can, however, run this command on most linux/unix machines:
 
-  # use caution..."find with -exec rm" can be dangerous if mis-typed
-  find /your_opencart_root/system/cache/pagecache -type f -exec rm {} \;
-
-
+    # use caution..."find with -exec rm" can be dangerous if mis-typed
+    find /your_opencart_root/system/cache/pagecache -type f -exec rm {} \;
 
 
 ## DEMO
