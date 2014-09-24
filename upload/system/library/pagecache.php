@@ -16,6 +16,7 @@ class PageCache {
     private $skip_urls= array(
         '#checkout/#',
         '#product/compare#',
+        '#product/captcha#',
         '#register/country#'
     );
 
