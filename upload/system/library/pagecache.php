@@ -17,6 +17,7 @@ class PageCache {
         '#checkout/#',
         '#product/compare#',
         '#product/captcha#',
+        '#contact/captcha#',
         '#register/country#'
     );
 
