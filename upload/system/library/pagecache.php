@@ -144,7 +144,7 @@ class PageCache {
         if ($this->addcomment == true) {
             fwrite($this->outfp, $buffer .
                   "\n<!--cache [". htmlspecialchars($_SERVER['REQUEST_URI']) . 
-                  "] expires: ".
+                  "] (" . $this->lang . '/' . $this->currency . ") expires: ".
                   date("Y-m-d H:i:s e",time()+$this->expire).'-->'
             );
         } else {
