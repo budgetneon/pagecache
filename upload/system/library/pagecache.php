@@ -24,8 +24,17 @@ class PageCache {
     private $cachefile=null;   // null specifically meaning "not known yet"
     private $oktocache=null;   // null specifically meaning "not known yet"
 
-    // contstructor
+    // constructor
     public function PageCache() {
+        // session initialization code verbatim 
+        // from opencart's library/session.php
+        if (!session_id()) {
+            ini_set('session.use_only_cookies', 'On');
+            ini_set('session.use_trans_sid', 'Off');
+            ini_set('session.cookie_httponly', 'On');
+            session_set_cookie_params(0, '/');
+            session_start();
+        }
         $this->cachefolder=DIR_CACHE. 'pagecache/';
         if (array_key_exists('language',$_SESSION)) {
             // only accept specific strings for $_SESSION['language']
