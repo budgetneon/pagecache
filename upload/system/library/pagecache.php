@@ -27,6 +27,19 @@ class PageCache {
     // contstructor
     public function PageCache() {
         $this->cachefolder=DIR_CACHE. 'pagecache/';
+        if (array_key_exists('language',$_SESSION)) {
+            // only accept specific strings for $_SESSION['language']
+            // (two small letters, optionally followed by - and more letters)
+            if (preg_match('/^[a-z]{2}-*[a-zA-Z]*$/',$_SESSION['language'])) {
+                $this->lang=$_SESSION['language'];
+            }
+        }
+        if (array_key_exists('currency',$_SESSION)) {
+            // only accept 3 consecutive capital letters for $_SESSION['language']
+            if (preg_match('/^[A-Z]{3}$/',$_SESSION['currency'])) {
+                $this->currency=$_SESSION['currency'];
+            }
+        }
         // store cacheability in a private variable
         $this->oktocache=$this->OkToCache();
     }
