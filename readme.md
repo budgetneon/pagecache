@@ -9,9 +9,9 @@ Version 1.00
 
 ## DESCRIPTION
 
-This page cache is part of a collection of code intended to help improve the performance and funtionality of opencart.  See [octurbo.com](http://octurbo.com) for more information on the effort.
+This is part of a collection of code intended to help improve the performance and funtionality of opencart.  See [octurbo.com](http://octurbo.com) for more information on the effort.
 
-At the moment, these improvements consist of a simple, but effective, page level cache for opencart.  It's very easy to install, consisting only of one new file and 2 minor changes to the index.php file in your main opencart directory.
+One of the improvements is this simple, but effective, page level cache for opencart.  It's very easy to install, consisting only of one new file and 2 minor changes to the index.php file in your main opencart directory.
 
 It has been tested so far only on opencart 1.5.6.X, but should work on all of the 1.5.X versions, perhaps with minor tweaks.  This is a new piece of software, so we highly recommend you test it well before using.  See the CAVEATS section. 
 
@@ -55,16 +55,23 @@ In order to keep this page cache lightweight, we do not store settings in the op
     private $lang='en'        ; // default language for site
     private $currency='USD'   ; // default currency for site
     private $addcomment = true; // set to true to add a comment to the bottom
-                                // of cached pages with info and expire time
-    private $skip_urls= array('#checkout/#','#product/compare#');
+                                // of cached html pages with info+expire time
+                                // only works where headers_list() works
+    private $skip_urls= array(
+        '#checkout/#',
+        '#product/compare#',
+        '#product/captcha#',
+        '#contact/captcha#',
+        '#register/country#'
+    );
 
 
 A new notes on these settings:
 
 - $expire : Because it's in the declaration section of the class, your options to set this are limited...you can't, for example, do $expire=24*24*60.  Just figure out the number of seconds you want cached pages to exist before they expire. We used 14400, which is 4 hours.
 - $lang and $currency : We cache pages for different languages and currencies in different files.  These two settings control what the default language and/or currency is if we get an http request that does not have the session variable(s) for each respective setting already set.
-- $addcomment : Set to true if you want the page cache to append an html comment at the end of the stored cache file that notes the url cached and it's expiry time.  This can be helpful since you can see it with live pages via your browser's "view source" functionality.  Set to false if you don't want this.  Note that this can create problems if you choose to cache, for example, JSON pages.  An thml comment at the end of some JSON will create runtime javascript errors.
-- $skip_urls : This is an array of PCRE patterns for urls that you do not want to be cached.  The default settings will not cache any page with the string 'checkout/' or 'product/compare' in it's url.  Not that this is not the only check done to decide when a page shoudn't be cached.  You don't have to, for example, mark the 'account/' pages here, because we already disable caching when a user is logged in.
+- $addcomment : Set to true if you want the page cache to append an html comment at the end of the stored cache file that notes the url cached and it's expiry time.  This can be helpful since you can see it with live pages via your browser's "view source" functionality.  Set to false if you don't want this.  We only add the comment if headers_list() is available and indicates that the cached resource is an html page.  This keeps us from adding an html comment to a cached JSON response, for example. 
+- $skip_urls : This is an array of PCRE patterns for urls that you do not want to be cached.  The default settings prevent caching for checkout pages, product comparisons, captchas, and the JSON country list.  Note that this is not the only check done to decide when a page shoudn't be cached.  You shouldn't have to, for example, mark the 'account/' pages here, because we already disable caching when a user is logged in.
 
 Also, the cached pages are kept in a directory named 'pagecache', under the existing directory opencart uses for it's more general cache.  In most installations, this would be /your_opencart_root/system/cache/pagecache.  There is no functionality to manually expire cached pages or flush the cache.  You can, however, run this command on most linux/unix machines:
 
@@ -81,9 +88,11 @@ A page cache makes a much bigger difference on an opencart site that has a lot o
 
 ## CAVEATS
 
+- This extension has been tested, but not in a rigorous way.  Please test it thorougly before deploying on a production server.
+
 - The page cache does not check the sanity of url parameters. So, it will happily cache '/index.php?foo=1', '/index.php?foo=2', and so on...all as separate urls and cache file.  This could result in a very large number of cached pages, and in extreme circumstances (like a robot crawling invalid pages), it could potentially fill up your hard drive.
 
-- We did try to put in sufficient logic such that dynamically created pages that should not be cached...aren't.  However, it's possible we missed some.  Also, if you've added extensions to opencart that have url's that shouldn't be cached, that will likely be missed.  See the "$skip_urls" setting to remedy that.
+- We did try to put in sufficient logic such that dynamically created pages that should not be cached...aren't.  However, it's possible we missed some.  Also, if you've added extensions to opencart that have url's that shouldn't be cached, that will likely be missed.  See the "$skip_urls" setting to remedy that. 
 
 - A page cache can be a terrible crutch, that effectively hides important performance problems.  For example, if your home page is really slow, the first person to request the page when it's not cached (or when the cache expires) will see that horrible performance.  Subsequent visits will get the benefit of the page cache, which is nice...but not if that's hiding the true issue from the site owner.  In short, it's not a substitute for proper performance tuning.
 

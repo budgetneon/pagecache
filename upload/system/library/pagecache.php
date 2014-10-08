@@ -12,7 +12,8 @@ class PageCache {
     private $lang='en'        ; // default language for site
     private $currency='USD'   ; // default currency for site
     private $addcomment = true; // set to true to add a comment to the bottom
-                                // of cached pages with info and expire time
+                                // of cached html pages with info+expire time
+                                // only works where headers_list() works
     private $skip_urls= array(
         '#checkout/#',
         '#product/compare#',
@@ -44,7 +45,7 @@ class PageCache {
             }
         }
         if (array_key_exists('currency',$_SESSION)) {
-            // only accept 3 consecutive capital letters for $_SESSION['language']
+            // only accept 3 consecutive A-Z for $_SESSION['language']
             if (preg_match('/^[A-Z]{3}$/',$_SESSION['currency'])) {
                 $this->currency=$_SESSION['currency'];
             }
@@ -54,8 +55,42 @@ class PageCache {
     }
   
     // null error handler to trap specific errors
-    public function nullhandler($errno, $errstr, $errfile, $errline) {
+    public function NullHandler($errno, $errstr, $errfile, $errline) {
         ;
+    }
+
+    //
+    // returns either a sanitized version of the domainname associated
+    // with this request, or false if the domainname is invalid or 
+    // cannot be determined.
+    //
+    public function DomainName() {
+        if (strlen($_SERVER['HTTP_HOST']) > 0) {
+            $domain=$_SERVER['HTTP_HOST'];
+        } elseif (strlen($_SERVER['SERVER_NAME']) > 0) {
+            $domain=$_SERVER['HTTP_HOST'];
+        } else {
+            return false;
+        }
+        // handle the case of port name being in the domain, like 127.0.0.1:80
+        $cpos=strrpos($domain,':');
+        if ($cpos === false) {
+            $port='';
+        } else {
+            $port='-' . substr($domain,$cpos+1);
+            $domain=substr($domain,0,$cpos);
+        }
+        $domain = str_replace(':','-',$domain);
+        // regex to match valid domain names
+        $regex='/^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])'.
+          '(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/';
+        if (!preg_match($regex,$domain)) {
+            return false;
+        }
+        if (strlen($domain) > 255) {
+            return false;
+        }
+        return $domain . $port;
     }
 
     //
@@ -78,13 +113,6 @@ class PageCache {
             (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']=='on')) {
             $this->oktocache=false;
             return $this->oktocache;
-        }
-        // start session
-        if (!session_id()) {
-            ini_set('session.use_cookies', 'On');
-            ini_set('session.use_trans_sid', 'Off');
-            session_set_cookie_params(0, '/');
-            session_start();
         }
         // don't cache for logged in customers or affiliates
         if(!empty($_SESSION['customer_id']) ||
@@ -116,7 +144,11 @@ class PageCache {
         if (! $this->OkToCache()) {
             return false;
         }
-        $domain = $_SERVER['HTTP_HOST'];
+        $domain = $this->DomainName();
+        if ($domain === false) {
+            return false;
+        }
+        $this->domain=$domain;
         $url = http_build_query($_GET);
         $md5=md5($url);
         $subfolder=substr($md5,0,1).'/'.substr($md5,1,1).'/';
@@ -140,10 +172,23 @@ class PageCache {
         }
     }
 
-    private function RedirectOutput($buffer) {
-        if ($this->addcomment == true) {
+    public function IsHtml() {
+        if (function_exists('headers_list')) {
+            foreach (headers_list() as $header) {
+                if (preg_match('#^content-type:\s*text/html#i',$header)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function RedirectOutput($buffer) {
+        if ($this->IsHtml() && $this->addcomment==true) {
             fwrite($this->outfp, $buffer .
-                  "\n<!--cache [". htmlspecialchars($_SERVER['REQUEST_URI']) . 
+                  "\n<!--cache host [" . htmlspecialchars($this->domain). 
+                  '] uri ['.
+                  htmlspecialchars($_SERVER['REQUEST_URI']) . 
                   "] (" . $this->lang . '/' . $this->currency . ") expires: ".
                   date("Y-m-d H:i:s e",time()+$this->expire).'-->'
             );
@@ -165,7 +210,7 @@ class PageCache {
                 mkdir($pparts['dirname'], 0755, true);
             }
             // get opencart to be quiet about fopen failures
-            $ohandler=set_error_handler(array($this, 'nullhandler'));
+            $ohandler=set_error_handler(array($this, 'NullHandler'));
             // prevent race conditions by opening first as a 
             // lockfile (via the 'x' flag to fopen), then renaming 
             // the file once we're done
@@ -175,7 +220,7 @@ class PageCache {
                 $this->outfp=$fp;
                 ob_start(array($this,'RedirectOutput'));
                 $response->output();
-                $ohandler=set_error_handler(array($this, 'nullhandler'));
+                $ohandler=set_error_handler(array($this, 'NullHandler'));
                 while(@ob_end_flush());
                 set_error_handler($ohandler);
                 fclose($fp);
