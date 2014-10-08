@@ -15,6 +15,12 @@ One of the improvements is this simple, but effective, page level cache for open
 
 It has been tested so far only on opencart 1.5.6.X, but should work on all of the 1.5.X versions, perhaps with minor tweaks.  This is a new piece of software, so we highly recommend you test it well before using.  See the CAVEATS section. 
 
+## Requirements
+
+- Opencart 1.5.X.  Has been tested on 1.5.6.X
+- PHP 5.4 is highly recommended
+  - It will run on PHP5.3, however, PHP5.3.x does not have http_response_code(), so we'll cache things that probably shouldn't be cached, like 5XX errors and "404 Not Found".  We looked at ways around this, and there's not anything elegant. It's too bad that opencart made the $headers array within system/library/response.php a private property. 
+
 ## Installation
 
 Two simple steps.

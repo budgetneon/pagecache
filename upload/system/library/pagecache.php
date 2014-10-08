@@ -198,9 +198,16 @@ class PageCache {
     }
 
     public function CachePage($response) {
-        // only cache good pages...for example, don't cache 404 responses
-        if (http_response_code() != 200) {
-            return false;
+        // if the http_response_code() function is available (php 5.4+),
+        // then we will only cache pages that are "200 OK".
+        //
+        // This keeps us from caching, for example:
+        //   - 5XX Errors that might be temporary
+        //   - 404 Not Found
+        if (function_exists('http_response_code')) {
+            if (http_response_code() != 200) {
+                return false;
+            }
         }
         if ($this->cachefile != null) {
             $temp=$this->cachefile . '.lock';
