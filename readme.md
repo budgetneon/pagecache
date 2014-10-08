@@ -19,7 +19,9 @@ It has been tested so far only on opencart 1.5.6.X, but should work on all of th
 
 - Opencart 1.5.X.  Has been tested on 1.5.6.X
 - PHP 5.4 is highly recommended
-  - It will run on PHP5.3, however, PHP5.3.x does not have http_response_code(), so we'll cache things that probably shouldn't be cached, like 5XX errors and "404 Not Found".  We looked at ways around this, and there's not anything elegant. It's too bad that opencart made the $headers array within system/library/response.php a private property. 
+  - It will run on PHP5.3, however:
+    - PHP5.3.x does not have http_response_code(), so we'll cache things that probably shouldn't be cached, like 5XX errors and "404 Not Found".  We looked at ways around this, and there's not anything elegant. It's too bad that opencart made the $headers array within system/library/response.php a private property. 
+    - Worse, when the cached pages are served, they will have a "200 OK" status. That will result in, for example, [Soft 404's](http://googlewebmastercentral.blogspot.com/2010/06/crawl-errors-now-reports-soft-404s.html)
 
 ## Installation
 
