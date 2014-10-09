@@ -9,7 +9,7 @@ Version 1.00
 
 ## DESCRIPTION
 
-This is part of a collection of code intended to help improve the performance and funtionality of opencart.  See [octurbo.com](http://octurbo.com) for more information on the effort.
+This is part of a collection of code intended to help improve the performance and functionality of opencart.  See [octurbo.com](http://octurbo.com) for more information on the effort.
 
 One of the improvements is this simple, but effective, page level cache for opencart.  It's very easy to install, consisting only of one new file and 2 minor changes to the index.php file in your main opencart directory.
 
