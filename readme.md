@@ -22,6 +22,7 @@ It has been tested so far only on opencart 1.5.6.X, but should work on all of th
   - It will run on PHP5.3, however:
     - PHP5.3.x does not have http_response_code(), so we'll cache things that probably shouldn't be cached, like 5XX errors and "404 Not Found".  We looked at ways around this, and there's not anything elegant. It's too bad that opencart made the $headers array within system/library/response.php a private property. 
     - Worse, when the cached pages are served, they will have a "200 OK" status. That will result in, for example, [Soft 404's](http://googlewebmastercentral.blogspot.com/2010/06/crawl-errors-now-reports-soft-404s.html)
+    - There is a little hack that will fix the two problems above.  It involves a small change to a core file, so I did not want to incorporate it into this extension.  You can see it at the bottom of [this github issue](https://github.com/budgetneon/pagecache/issues/2).
 
 ## Installation
 
