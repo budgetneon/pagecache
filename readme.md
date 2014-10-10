@@ -97,6 +97,8 @@ A page cache makes a much bigger difference on an opencart site that has a lot o
 
 ## CAVEATS
 
+- The "Output Compression Level" within opencart (System->Settings->Edit->Server->Output Compression Level) must be set to 0. See [this issue](https://github.com/budgetneon/pagecache/issues/3) for details.
+ 
 - This extension has been tested, but not in a rigorous way.  Please test it thorougly before deploying on a production server.
 
 - The page cache does not check the sanity of url parameters. So, it will happily cache '/index.php?foo=1', '/index.php?foo=2', and so on...all as separate urls and cache file.  This could result in a very large number of cached pages, and in extreme circumstances (like a robot crawling invalid pages), it could potentially fill up your hard drive.
