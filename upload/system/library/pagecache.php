@@ -53,6 +53,17 @@ class PageCache {
         // store cacheability in a private variable
         $this->oktocache=$this->OkToCache();
     }
+   
+    public function Settings() {
+        return array(
+            'expire' => $this->expire,
+            'lang'   => $this->lang,
+            'currency' => $this->currency,
+            'addcomment' => $this->addcomment,
+            'cachefolder' => $this->cachefolder,
+            'skip_urls'  => $this->skip_urls
+        );
+    }
   
     // null error handler to trap specific errors
     public function NullHandler($errno, $errstr, $errfile, $errline) {
@@ -153,7 +164,7 @@ class PageCache {
         $md5=md5($url);
         $subfolder=substr($md5,0,1).'/'.substr($md5,1,1).'/';
         $cacheFile = $this->cachefolder . $subfolder . $domain . '_' . 
-            $this->lang . '_' . $this->currency . '_' . $md5 . '.html';
+            $this->lang . '_' . $this->currency . '_' . $md5 . '.cache';
         if (file_exists($cacheFile)) {
             if (time() - $this->expire < filemtime($cacheFile) ){
                 // flush and disable the output buffer
@@ -173,6 +184,12 @@ class PageCache {
     }
 
     public function IsHtml() {
+        $log=fopen('/tmp/headers.log','a');
+        foreach (headers_list() as $header) {
+            fwrite($log,$header . "\n");
+        }
+        fwrite($log,"\n");
+        fclose($log);
         if (function_exists('headers_list')) {
             foreach (headers_list() as $header) {
                 if (preg_match('#^content-type:\s*text/html#i',$header)) {
@@ -226,6 +243,7 @@ class PageCache {
             if ($fp != false) {
                 $this->outfp=$fp;
                 ob_start(array($this,'RedirectOutput'));
+                $response->setCompression(0);
                 $response->output();
                 $ohandler=set_error_handler(array($this, 'NullHandler'));
                 while(@ob_end_flush());

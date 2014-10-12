@@ -11,14 +11,14 @@ Version 1.00
 
 This is part of a collection of code intended to help improve the performance and functionality of opencart.  See [octurbo.com](http://octurbo.com) for more information on the effort.
 
-One of the improvements is this simple, but effective, page level cache for opencart.  It's very easy to install, consisting only of one new file and 2 minor changes to the index.php file in your main opencart directory.
+One of the improvements is this simple, but effective, page level cache for opencart.  It includes an admin panel, and an installer that will make two simples changes to your main index.php file. 
 
 It has been tested so far only on opencart 1.5.6.X, but should work on all of the 1.5.X versions, perhaps with minor tweaks.  This is a new piece of software, so we highly recommend you test it well before using.  See the CAVEATS section. 
 
 ## Requirements
 
 - Opencart 1.5.X.  Has been tested on 1.5.6.X
-- PHP 5.4 is highly recommended
+- PHP 5.4 is STRONGLY recommended
   - It will run on PHP5.3, however:
     - PHP5.3.x does not have http_response_code(), so we'll cache things that probably shouldn't be cached, like 5XX errors and "404 Not Found".  We looked at ways around this, and there's not anything elegant. It's too bad that opencart made the $headers array within system/library/response.php a private property. 
     - Worse, when the cached pages are served, they will have a "200 OK" status. That will result in, for example, [Soft 404's](http://googlewebmastercentral.blogspot.com/2010/06/crawl-errors-now-reports-soft-404s.html)
@@ -26,33 +26,80 @@ It has been tested so far only on opencart 1.5.6.X, but should work on all of th
 
 ## Installation
 
-Two simple steps.
+- Copy all of the files in the upload directory into your main opencart installation
+- Log into the admin panel of your store
+- Navigate to the Extensions > Modules tab 
+- You should see the module listed there as "Page Cache"
+- Click the Install link
+- There should now be a new link next to "Page Cache" labeled "Edit".  Click That link.
+- Make sure you have a backup copy of your main index.php first, then...
+  - Click the Enable Cache button 
+  - If the Enable Cache button returns an error, you may need to make the changes to your index.php file manually.  See the Manual Installation section.
+- The cache should now be working
 
-- Copy the pagecache.php file to the system/library directory of your opencart installation.
-- Read the 'index.php.changes' file, and make the two changes to your index.php file
+## Manual Installation
+This extension has to make changes to your main index.php before it will work.  There is an "Enable Cache" button in the extension's admin page that can make those changes.  However, in some environments, this button may not be able to do that, due to file permissions, a customized installation of opencart, etc.  If that's the case, you'll have to make the changes to the index.php manually.
 
+NOTE: THESE MANUAL INSTALLATION INSTRUCTIONS ARE ONLY FOR PEOPLE HAVING ISSUES WITH THE "ENABLE CACHE" BUTTON WITHIN THE PAGECACHE ADMIN PANEL.
+
+There's two changes that need to be made.
+
+1. At the top of your main index.php file, find this section of code:
+
+    if (file_exists('config.php')) {
+        require_once('config.php');
+    }  
+
+Then, add these 6 lines, exactly as shown below, just after the section of code above:
+
+    require_once(DIR_SYSTEM . 'library/pagecache.php');             //PAGECACHE
+    $pagecache = new PageCache();                                   //PAGECACHE
+    if ($pagecache->ServeFromCache()) {                             //PAGECACHE
+        // exit here if we served this page from the cache          //PAGECACHE
+        return;                                                     //PAGECACHE
+    }                                                               //PAGECACHE
+
+2. At the bottom of your main index.php, find this section of code:
+
+    // Output
+    $response->output();
+
+Then, add these 3 lines of code, just after the section of code above:
+
+    if ($pagecache->OkToCache()) {                                  //PAGECACHE
+        $pagecache->CachePage($response);                           //PAGECACHE
+    }                                                               //PAGECACHE
 
 ## OVERVIEW
 Very early in opencart's main index.php file, the following lines of code have been added:
  
-    require_once(DIR_SYSTEM . 'library/pagecache.php');
-    $pagecache = new PageCache();
-    if ($pagecache->ServeFromCache()) {
-        // exit here if we served this page from the cache;
-        return;
-    }
+    require_once(DIR_SYSTEM . 'library/pagecache.php');             //PAGECACHE
+    $pagecache = new PageCache();                                   //PAGECACHE
+    if ($pagecache->ServeFromCache()) {                             //PAGECACHE
+        // exit here if we served this page from the cache          //PAGECACHE
+        return;                                                     //PAGECACHE
+    }                                                               //PAGECACHE
 
 This section of code looks to see if there's a previously cached file for the url that's currently being requested.  If there is, and it's not expired, the request is served from the cache.  Because this is very early in the index.php file, and because it exits if served from the cache (via the return() call), it skips over almost all of the processing that opencart normally does.  No database calls, etc..so it's very fast.
 
 Later, towards the end of the index.php, the following lines of code have been added.  This is very near the end of the file, after whatever page was requested has already been generated by opencart, and served to the end user. 
 
-    // if this page is ok to cache, but not yet in the cache,
-    // then try to save it to the page cache
-    if ($pagecache->OkToCache()) {
-       $pagecache->CachePage($response);
-    }
+    if ($pagecache->OkToCache()) {                                  //PAGECACHE
+        $pagecache->CachePage($response);                           //PAGECACHE
+    }                                                               //PAGECACHE
 
 Here, we're seeing if we should take the page that opencart just generated and cache it.  This does add a small amount of overhead in writing out the content twice (once to the browser, and once to the cache file).  That is, however, the only notable overhead added, and it's quite minimal.  
+## ADMIN PANEL
+
+This extension includes an easy to use admin panel that allows you to:
+
+- Enable and disable the cache
+- Purge cached files (either all of them, or just the expired ones)
+- See statistics on the number of cached files, and disk space used, for both currently valid, as well as expired cache files
+- View, but not change, the settings (you have to manually edit system/library/pagecache.php to change settings).
+
+Here's a screenshot of the admin panel:
+![Pagecache Admin Panel](https://i.imgur.com/0qkDzRJ.png)
 
 ## SETTINGS
 
@@ -91,16 +138,18 @@ Also, the cached pages are kept in a directory named 'pagecache', under the exis
 ## DEMO
 
 
-We created demo site at [octurbo.com](http://octurbo.com).  The home page has links to both a stock/vanilla installation of opencart, and one with our page cache.  Note that you may have to load a page from the pagecache enabled site twice...once to prime the cache, and a second time to see the performance improvement.
+We created a demo site at [octurbo.com](http://octurbo.com).  The home page has links to both a stock/vanilla installation of opencart, and one with our page cache.  Note that you may have to load a page from the pagecache enabled site twice...once to prime the cache, and a second time to see the performance improvement.
 
 A page cache makes a much bigger difference on an opencart site that has a lot or products, categories, and other functionality.  So, for the demo site, we uploaded a large number of movies from [an Amazon AWS Cloudsearch dataset](https://aws.amazon.com/developertools/9131774809784850). You can also try our production site at [budgetneon.com](http://budgetneon.com/).  It has lots of products and nested categories.  If you view the source of a cached page, you'll see the html comment at the bottom.
 
 ## CAVEATS
 
-- The "Output Compression Level" within opencart (System->Settings->Edit->Server->Output Compression Level) must be set to 0. See [this issue](https://github.com/budgetneon/pagecache/issues/3) for details.
- 
 - This extension has been tested, but not in a rigorous way.  Please test it thorougly before deploying on a production server.
 
+- Using the "Enable Cache" and "Disable Cache" buttons in the admin panel makes live changes to your main index.php file.  Make sure you have a backup of the main index.php file in case anything goes wrong. 
+
+- The "Output Compression Level" within opencart (System->Settings->Edit->Server->Output Compression Level) is disabled when a cached page is served.  If you want cached pages to be compressed, disable output compression within opencart, and use apache's mod_deflate instead. It's a better solution anyway.
+ 
 - The page cache does not check the sanity of url parameters. So, it will happily cache '/index.php?foo=1', '/index.php?foo=2', and so on...all as separate urls and cache file.  This could result in a very large number of cached pages, and in extreme circumstances (like a robot crawling invalid pages), it could potentially fill up your hard drive.
 
 - We did try to put in sufficient logic such that dynamically created pages that should not be cached...aren't.  However, it's possible we missed some.  Also, if you've added extensions to opencart that have url's that shouldn't be cached, that will likely be missed.  See the "$skip_urls" setting to remedy that. 
