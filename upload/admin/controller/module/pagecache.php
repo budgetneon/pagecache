@@ -70,7 +70,7 @@ class ControllerModulePagecache extends Controller {
                        $fpath=$dname . '/' . $file; 
                        if (is_file($fpath)) {
                            $fstats=stat($fpath);
-                           $sizemb=number_format($fstats['size']/104856,2);
+                           $sizemb=number_format($fstats['size']/1048576,2);
                            $ctime=$fstats['ctime'];
                            $stats['totalb']+=$sizemb;
                            $stats['totalf']+=1;
