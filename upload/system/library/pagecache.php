@@ -184,12 +184,6 @@ class PageCache {
     }
 
     public function IsHtml() {
-        $log=fopen('/tmp/headers.log','a');
-        foreach (headers_list() as $header) {
-            fwrite($log,$header . "\n");
-        }
-        fwrite($log,"\n");
-        fclose($log);
         if (function_exists('headers_list')) {
             foreach (headers_list() as $header) {
                 if (preg_match('#^content-type:\s*text/html#i',$header)) {

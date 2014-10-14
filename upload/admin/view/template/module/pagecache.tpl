@@ -120,7 +120,18 @@ function showstatus() {
                       $('#modulestatus').css("background-color","#dd0000")
                       $('#changestatus').prop('disabled',true);
                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    // 200 ok, with ajax error probably expired admin session
+                    if (xhr.status == 200) {
+                        alert('admin session expired? reloading page');
+                        location.reload();
+                    } else {
+                        alert('ajax load error: ' + xhr.status +
+                              'error [' + thrownError + ']');
+                    }
                 }
+
       });
   });
 }
@@ -142,7 +153,18 @@ function enablemod() {
                     $('#changestatus').prop('disabled',false);
                     $('#changestatus').fadeTo("fast",1.0);
                     showstatus();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    // 200 ok, with ajax error probably expired admin session
+                    if (xhr.status == 200) {
+                        alert('admin session expired? reloading page');
+                        location.reload();
+                    } else {
+                        alert('ajax load error: ' + xhr.status +
+                              'error [' + thrownError + ']');
+                    }
                 }
+
       });
   });
 }
@@ -164,7 +186,18 @@ function disablemod() {
                     $('#changestatus').prop('disabled',false);
                     $('#changestatus').fadeTo("fast",1.0);
                     showstatus();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    // 200 ok, with ajax error probably expired admin session
+                    if (xhr.status == 200) {
+                        alert('admin session expired? reloading page');
+                        location.reload();
+                    } else {
+                        alert('ajax load error: ' + xhr.status +
+                              'error [' + thrownError + ']');
+                    }
                 }
+
       });
   });
 }
@@ -183,6 +216,16 @@ function fillstats() {
                         $('#'+item).fadeOut();
                         $('#'+item).html(json[item]);
                         $('#'+item).fadeIn();
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    // 200 ok, with ajax error probably expired admin session
+                    if (xhr.status == 200) {
+                        alert('admin session expired? reloading page');
+                        location.reload();
+                    } else {
+                        alert('ajax load error: ' + xhr.status +
+                              'error [' + thrownError + ']');
                     }
                 }
       });
@@ -211,7 +254,18 @@ function purge(which) {
             success: function(json) {
               alert(json['success']);
               fillstats();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                // 200 ok, with ajax error probably expired admin session
+                if (xhr.status == 200) {
+                    alert('admin session expired? reloading page');
+                    location.reload();
+                } else {
+                    alert('ajax load error: ' + xhr.status +
+                          'error [' + thrownError + ']');
+                }
             }
+
       });
   });
 }
