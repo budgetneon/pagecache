@@ -151,10 +151,10 @@ class ControllerModulePagecache extends Controller {
         $desiredcount=count($this->topcode()) + count($this->bottomcode());
         while(!feof($fp)) {
             $line=fgets($fp);
-            if (preg_match('#^// Install\s*$#',$line))  {
+            if (preg_match('#^// Install\s*#',$line))  {
                 $topmarker=true;
             }
-            if (preg_match('#^\$response->output\(\);*$#',$line))  {
+            if (preg_match('#^\$response->output\(\);*#',$line))  {
                 $bottommarker=true;
             }
             if (preg_match('/pagecache/i',$line)) {
@@ -229,12 +229,12 @@ class ControllerModulePagecache extends Controller {
         $in=@fopen($this->pathindexphp(),'r');
         while(!feof($in)) {
             $line=fgets($in);
-            if (preg_match('#^// Install\s*$#',$line))  {
+            if (preg_match('#^// Install\s*#',$line))  {
                 foreach ($this->topcode() as $code) {
                     fwrite($out,str_pad($code,60) . "    //PAGECACHE\n");
                 }
                 fwrite($out,$line);
-            } elseif (preg_match('#^\$response->output\(\);*$#',$line))  {
+            } elseif (preg_match('#^\$response->output\(\);*#',$line))  {
                 fwrite($out,$line);
                 foreach ($this->bottomcode() as $code) {
                     fwrite($out,str_pad($code,60) . "    //PAGECACHE\n");
