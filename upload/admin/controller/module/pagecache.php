@@ -15,6 +15,12 @@ class ControllerModulePagecache extends Controller {
         $pagecache = new PageCache();
         $vals=$pagecache->Settings();
         foreach (array_keys($vals) as $key) {
+            if ($vals[$key] === true) {
+                $vals[$key]='true';
+            }
+            if ($vals[$key] === false) {
+                $vals[$key]='false';
+            }
             $this->data[$key]=$vals[$key];
         }
         $this->document->setTitle($this->language->get('heading_title'));
@@ -132,13 +138,19 @@ class ControllerModulePagecache extends Controller {
             } else {
                 $sapicompat=$this->language->get('pc_sapi_fcgi_oldphp');
             }
+        } elseif ($phpsapi == 'litespeed') {
+                $sapicompat=$this->language->get('pc_sapi_litespeed');
         } else {
             $sapicompat=$this->language->get('pc_sapi_not_tested');
         }
-        return "<br><b>PHP Version: </b>" . phpversion() . ", <b>".
-               $this->language->get('pc_text_status') . "</b>: $phpcompat".
-               "<br><b>SAPI: </b>" . $phpsapi . ", <b>". 
-               $this->language->get('pc_text_status') . "</b>: $sapicompat"; 
+        return "<table class='list'><thead>".
+               "<tr><td>Component</td><td>Detected</td>".
+               "<td>Status</td></tr></thead><tbody><tr>".
+               "<td>PHP</td><td>" . phpversion() . "</td>".
+               "<td>$phpcompat</td></tr>".
+               "<tr><td>SAPI</td><td>" . $phpsapi . "</td>".
+               "<td>$sapicompat</td></tr>".
+               "</tbody></table>";
     }
     public function statusindexphp() {
         $this->language->load('module/pagecache');

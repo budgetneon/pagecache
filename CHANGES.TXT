@@ -1,0 +1,26 @@
+10/24/2014 
+    - Version 1.0.4 
+    - Support for litespeed
+        -work around litespeed bug with http_status_code()
+    - Minor admin interface changes
+    - Support for wrapping the html comment with <!--[if IE]><![endif]-->
+        - useful if an html minifier is stripping it (like cloudflare)
+        - off by default, you have to enable it
+
+10/24/2014
+    - Version 1.0.3
+    - Don't call ob_end_flush() unless it's enabled via configuration
+
+
+10/18/2014
+    - Version 1.0.2
+    - Deal with index.php lines endings containing \r
+
+10/12/2014
+    - Version 1.0.1
+    - Admin panel
+    - Various bug fixes wrt windows file names, sessions, more
+
+09/17/2014
+    - Version 1.0.0
+    - Initial Release
