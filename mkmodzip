@@ -1,5 +1,5 @@
 #!/bin/sh
-version="1.0.4"
+version="1.0.5"
 echo "VERSION: ${version}" > VERSION.TXT
 rm -f pagecache*.zip
 /usr/bin/zip -rD pagecache-${version}.zip *.TXT upload/

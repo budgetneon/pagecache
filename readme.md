@@ -153,6 +153,19 @@ Also, the cached pages are kept in a directory named 'pagecache', under the exis
     # use caution..."find with -exec rm" can be dangerous if mis-typed
     find /your_opencart_root/system/cache/pagecache -type f -exec rm {} \;
 
+## LOCALES AND CHARSETS
+
+This module does not set either the charset encoding or the locale.  This can be a source of issues, as many people are depending solely on their third party opencart themes to set the correct charset and encoding, rather than setting it globally, at either the php or webserver (apache, for example) level.
+
+If you're having trouble with odd characters when cached pages are served, you're probably seeing this issue.  To fix it, you'll need to correctly set up your php environment, and then delete any existing cached pages.
+
+There are many ways to set up the default locale and charset.  You could set that up within apache (or nginx, etc), or you could set it within your php.ini file.  One method that works with this module is to set it up within opencart's config.php file.  Since the opencart config.php file is read very early within opencart's index.php file, our cache module will inherit anything set there.  Here's an example of what to add to the opencart config.php file:
+
+    # put this at the bottom of the opencart config.php file
+    # example to set locale and encoding for Turkish
+    ini_set('intl.default_locale','tr_TR');
+    ini_set('default_charset','windows-1254');
+
 
 ## DEMO
 

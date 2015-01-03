@@ -247,6 +247,8 @@ class PageCache {
                         if (http_response_code() != '') {
                             return false;
                         }
+                    } else {
+                        return false;
                     }
                 } else { 
                     return false;
