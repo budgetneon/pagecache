@@ -55,6 +55,7 @@ class ControllerModulePagecache extends Controller {
         $this->response->setOutput($this->render());
     }
     public function stats() {
+		$this->response->addHeader('Content-Type: application/json');
         require_once(DIR_SYSTEM . 'library/pagecache.php');
         $pagecache = new PageCache();
         $vals=$pagecache->Settings();
@@ -144,12 +145,12 @@ class ControllerModulePagecache extends Controller {
             $sapicompat=$this->language->get('pc_sapi_not_tested');
         }
         return "<table class='list'><thead>".
-               "<tr><td>Component</td><td>Detected</td>".
-               "<td>Status</td></tr></thead><tbody><tr>".
-               "<td>PHP</td><td>" . phpversion() . "</td>".
-               "<td>$phpcompat</td></tr>".
-               "<tr><td>SAPI</td><td>" . $phpsapi . "</td>".
-               "<td>$sapicompat</td></tr>".
+               "<tr><td class='left'>Component</td><td>Detected</td>".
+               "<td class='left'>Status</td></tr></thead><tbody><tr>".
+               "<td class='left'>PHP</td><td>" . phpversion() . "</td>".
+               "<td class='left'>$phpcompat</td></tr>".
+               "<tr><td class='left'>SAPI</td><td>" . $phpsapi . "</td>".
+               "<td class='left'>$sapicompat</td></tr>".
                "</tbody></table>";
     }
     public function statusindexphp() {
