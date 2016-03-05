@@ -1,3 +1,8 @@
+03/05/2016
+    - Version 1.0.6
+    - Support caching https pages.  Cached separately from http pages
+    - Change to newer style constructor so this can work with PHP7
+
 01/03/2015
     - Version 1.0.5
     - add docs for charset and locale, add missing logic for http response 

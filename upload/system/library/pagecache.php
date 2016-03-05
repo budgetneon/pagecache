@@ -38,7 +38,7 @@ class PageCache {
     private $oktocache=null;   // null specifically meaning "not known yet"
 
     // constructor
-    public function PageCache() {
+    public function __construct() {
         // session initialization code verbatim 
         // from opencart's library/session.php
         if (!session_id()) {
@@ -84,6 +84,19 @@ class PageCache {
         ;
     }
 
+    public function Protocol() {
+        if (isset($_SERVER['HTTPS']) &&
+            ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
+            isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+            $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+          $protocol = 'https';
+        }
+        else {
+          $protocol = 'http';
+        }
+        return $protocol;
+    }
+
     //
     // returns either a sanitized version of the domainname associated
     // with this request, or false if the domainname is invalid or 
@@ -121,7 +134,8 @@ class PageCache {
     //
     // returns true if the url being requested is something
     // we're allowed to cache.  We don't, for example, cache
-    // https pages, or pages where the user is logged in, etc.
+    // when the cart has items in it, or when the user is logged in, etc.
+    //
     public function OkToCache() {
         // don't retest if called more than once
         if ($this->oktocache != null) {
@@ -133,20 +147,19 @@ class PageCache {
             $this->oktocache=false;
             return $this->oktocache;
         } 
-        // don't cache secure pages
-        if(!empty($_SERVER['HTTPS']) || 
-            (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS']=='on')) {
+        // don't cache if cart has items in it
+        if (!empty($_SESSION['cart']))  {
             $this->oktocache=false;
             return $this->oktocache;
-        }
+        } 
         // don't cache for logged in customers or affiliates
         if(!empty($_SESSION['customer_id']) ||
             !empty($_SESSION['affiliate_id'])) {
             $this->oktocache=false;
             return $this->oktocache;
         }  
-        // don't cache if affiliate page, or cart has items in it
-        if (!empty($_GET['affiliate']) || !empty($_SESSION['cart']))  {
+        // don't cache if affiliate page
+        if (!empty($_GET['affiliate']))  {
             $this->oktocache=false;
             return $this->oktocache;
         } 
@@ -177,8 +190,9 @@ class PageCache {
         $url = http_build_query($_GET);
         $md5=md5($url);
         $subfolder=substr($md5,0,1).'/'.substr($md5,1,1).'/';
-        $cacheFile = $this->cachefolder . $subfolder . $domain . '_' . 
-            $this->lang . '_' . $this->currency . '_' . $md5 . '.cache';
+        $cacheFile = $this->cachefolder . $subfolder . 
+            $this->Protocol() . '_' . $domain . '_' .  $this->lang . '_' . 
+            $this->currency . '_' . $md5 .  '.cache';
         if (file_exists($cacheFile)) {
             if (time() - $this->expire < filemtime($cacheFile) ){
                 // flush and disable the output buffer
@@ -219,12 +233,13 @@ class PageCache {
                 $post="-->\n<![endif]-->";
             }
             fwrite($this->outfp, $buffer .
-                  $pre . 
-                  "cache host [" . htmlspecialchars($this->domain). '] uri ['.
-                  htmlspecialchars($_SERVER['REQUEST_URI']) . 
+                  $pre .
+                  "cache protocol [". $this->Protocol() . '] ' .
+                  "host [" . htmlspecialchars($this->domain). '] uri ['.
+                  htmlspecialchars($_SERVER['REQUEST_URI']) .
                   "] (" . $this->lang . '/' . $this->currency . ") expires: ".
                   date("Y-m-d H:i:s e",time()+$this->expire).
-                  $post 
+                  $post
             );
         } else {
             fwrite($this->outfp, $buffer);
