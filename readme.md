@@ -15,6 +15,8 @@ One of the improvements is this simple, but effective, page level cache for open
 
 It has been tested so far only on opencart 1.5.6.X, but should work on all of the 1.5.X versions, perhaps with minor tweaks.  This is a new piece of software, so we highly recommend you test it well before using.  See the CAVEATS section. 
 
+Note that we also provide a page cache for Opencart 2.x.  See our [v2pagecache repo](https://github.com/budgetneon/v2pagecache) if you're running Opencart version 2. 
+
 ## Requirements
 
 - Opencart 1.5.X.  Has been tested on 1.5.6.X
