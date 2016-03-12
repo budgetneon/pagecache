@@ -89,6 +89,10 @@
               <td class='left'><?php print $pc_end_flush_note;?></td>
             </tr>
             <tr>
+              <td class='left'>cachebydevice</td><td class='left'><?php echo $cachebydevice;?></td>
+              <td class='left'><?php print $pc_cachebydevice_note;?></td>
+            </tr>
+            <tr>
               <td class='left'>skip_urls</td>
               <td class='left'><?php echo join('<br>',$skip_urls);?></td>
               <td class='left'><?php print $pc_skipurls_note;?></td>
