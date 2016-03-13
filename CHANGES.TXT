@@ -1,4 +1,7 @@
 03/12/2016
+    - Version 1.0.8
+    - Bugfixes, Doc Updates
+03/12/2016
     - Version 1.0.7
     - Support for separately caching for mobile, tablet, and desktop
     - Changes to skip_urls for compare/wishlist

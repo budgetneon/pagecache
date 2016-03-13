@@ -65,6 +65,10 @@
           </thead>
           <tbody>
             <tr>
+              <td class='left'>cachefolder</td><td class='left'><?php echo $cachefolder;?></td>
+              <td class='left'><?php print $pc_cachefolder_note;?></td>
+            </tr>
+            <tr>
               <td class='left'>expire</td><td class='left'><?php echo $expire;?></td>
               <td class='left'><?php print $pc_expire_note;?></td>
             </tr>
