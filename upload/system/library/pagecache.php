@@ -42,8 +42,7 @@ class PageCache {
         '#register/country#',
         '#/wishlist/#',
         '#/compare/#',
-        '#/captcha#',
-        '#journal2/assets#'
+        '#/captcha#' 
     );
 
     private $cachefile=null;   // null specifically meaning "not known yet"

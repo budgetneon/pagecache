@@ -5,7 +5,7 @@ pagecache - A fast, open source page level cache for opencart
 
 ## VERSION
 
-Version 1.0.8
+Version 1.0.9
 
 ## DESCRIPTION
 

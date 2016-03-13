@@ -1,5 +1,5 @@
 03/12/2016
-    - Version 1.0.8
+    - Version 1.0.8/1.0.9
     - Bugfixes, Doc Updates
 03/12/2016
     - Version 1.0.7
