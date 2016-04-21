@@ -277,6 +277,9 @@ class PageCache {
             $this->currency . '_' . $md5 .  '.cache';
         if (file_exists($cacheFile)) {
             if (time() - $this->expire < filemtime($cacheFile) ){
+
+                header('Content-type: text/html; charset=utf-8');
+
                 // flush and disable the output buffer
                 if ($this->end_flush === true) {
                     while(@ob_end_flush());
